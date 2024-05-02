@@ -40,3 +40,6 @@ for url in gog_urls:
             print("No se pudo encontrar el precio del juego en", url)
     else:
         print("No se pudo encontrar la parte del HTML que contiene el precio del juego en", url)
+
+
+#prueba
