@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block title %}Buscar Juegos{% endblock %} {% block
+    content %}
+    <form method="POST">
+        <br>
+      <h3 align="center">¡Compara precios de juegos!</h3>
+        <br>
+      <div class="form-group">
+        <label for="email">Compara juego por nombre</label>
+        <input
+          type="game"
+          class="form-control"
+          id="game"
+          name="game"
+          placeholder="Insertar nombre del juego"
+        />
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+    {% endblock %}
+    

@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block title %}Inicio{% endblock %} {% block content
+%}
+  <br>
+  <h1 align="center">💲GAME WALLET💲</h1>
+  <br>
+  <p align="center">¡Bienvenido a Game Wallet!</p> 
+  <p align="center"> Aquí podras disfrutar de los mejores videojuegos sin gastar de más.  <br> Observa nuestras recomendaciones o haz una busqueda para empezar a ahorrar.</p>
+  <br>
+  <h3 align="center">🎮Juegos recomendados🎮</h3>
+  <br>
+
+  <!-- Targetas recomendación -->
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-3 col-lg-6">
+            <div class="card">
+                <img class="card-img-top" src="https://cdn.akamai.steamstatic.com/steam/apps/377160/ss_f7861bd71e6c0c218d8ff69fb1c626aec0d187cf.1920x1080.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Fallout 4</h5>
+                    <p class="card-text">¿Cómo habrá quedado el planeta después de una guerra atómica total?</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Precio Steam</li>
+                    <li class="list-group-item">Precio GOG {{ precio_fallout_4 }} €</li>
+                    <li class="list-group-item">Precio Instant Gaming</li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">Comprar al mejor precio</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3 col-lg-6">
+            <div class="card">
+                <img class="card-img-top" src="https://cdn.akamai.steamstatic.com/steam/apps/377160/ss_f7861bd71e6c0c218d8ff69fb1c626aec0d187cf.1920x1080.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Fallout 4</h5>
+                    <p class="card-text">¿Cómo habrá quedado el planeta después de una guerra atómica total?</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Precio Steam</li>
+                    <li class="list-group-item">Precio GOG</li>
+                    <li class="list-group-item">Precio Instant Gaming</li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">Comprar al mejor precio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
