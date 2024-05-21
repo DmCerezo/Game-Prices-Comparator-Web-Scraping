@@ -33,9 +33,11 @@ git clone https://github.com/DmCerezo/Proyecto-Web-Scraping-ISI-UGR.git
 ```
 ## Abrir el entorno de trabajo
 ```bash
+ python -m venv env  
+```
+```bash
 .\env\Scripts\activate 
 ```
-
 ```bash
 pip install -r requirements.txt
 ```
