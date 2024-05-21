@@ -1,22 +1,13 @@
-runtime: python39
-
-instance_class: F1
-
-automatic_scaling:
-  min_instances: 0  # Puede iniciar instancias de manera dinámica según la carga
-  max_instances: 1  # Limita el número máximo de instancias a 1
-  target_cpu_utilization: 0.75
-  target_throughput_utilization: 0.75
-
-handlers:
-  - url: /static
-    static_dir: static
-
-  - url: /.*
-    script: auto
-
-# Entrada para ejecutar tu aplicación
+runtime: python
+env: flex
 entrypoint: gunicorn -b :$PORT app:app
 
-env_variables:
-  FLASK_ENV: 'production'
+runtime_config:
+  operating_system: ubuntu22
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
