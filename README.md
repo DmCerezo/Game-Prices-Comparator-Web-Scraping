@@ -1,6 +1,26 @@
 # Game Wallet 
+## Deply google cloud
+iniciar shell de google could
+```bash
+git clone https://github.com/DmCerezo/Proyecto-Web-Scraping-ISI-UGR.git
+```
 
-## Como instalar y ejecutar
+o si ya esta copiado solo
+```bash
+git pull
+```
+
+Lanzar la aplicación
+```bash
+gcloud app deploy
+```
+
+Obtener link de la aplicación
+```bash
+gcloud app browse
+```
+
+## Como instalar y ejecutar en local
 
 Importante tener python instalado
 
