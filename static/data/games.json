@@ -1,0 +1,45 @@
+{
+    "games": [
+      {
+        "platform": "Steam",
+        "title": "The Witcher 3: Wild Hunt",
+        "opinion": "Overwhelmingly Positive",
+        "price": "$39.99",
+        "link": "https://store.steampowered.com/app/292030/The_Witcher_3_Wild_Hunt/",
+        "image": "https://path/to/witcher3.jpg"
+      },
+      {
+        "platform": "Instant Gaming",
+        "title": "Cyberpunk 2077",
+        "opinion": "Very Positive",
+        "price": "$29.99",
+        "link": "https://www.instant-gaming.com/en/2584-buy-cyberpunk-2077-pc-game/",
+        "image": "https://path/to/cyberpunk2077.jpg"
+      },
+      {
+        "platform": "G2A",
+        "title": "Red Dead Redemption 2",
+        "opinion": "Positive",
+        "price": "$49.99",
+        "link": "https://www.g2a.com/red-dead-redemption-2",
+        "image": "https://path/to/rdr2.jpg"
+      },
+      {
+        "platform": "Epic Games",
+        "title": "Fortnite",
+        "opinion": "Mixed",
+        "price": "Free",
+        "link": "https://www.epicgames.com/fortnite/en-US/home",
+        "image": "https://path/to/fortnite.jpg"
+      },
+      {
+        "platform": "GOG",
+        "title": "Baldur's Gate 3",
+        "opinion": "Very Positive",
+        "price": "$59.99",
+        "link": "https://www.gog.com/game/baldurs_gate_3",
+        "image": "https://path/to/bg3.jpg"
+      }
+    ]
+  }
+  
