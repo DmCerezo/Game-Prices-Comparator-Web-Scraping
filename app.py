@@ -28,27 +28,34 @@ def ReturnElem(title=None, picture_url=None, price=None, opinion=None, link=None
     }
     return game_info
 
-# Function for Steam scraping
 def ScrappingSteam(userSearch):
     url = Steam + userSearch
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
-    result = soup.find('a', class_='search_result_row')
     try:
-        title = result.find('span', class_='title').text
-        picture_url = result.img['src']
-        opinion = soup.find("span", {"class": "search_review_summary positive"})["data-tooltip-html"].split("<br>")[0]
-        price = result.find('div', class_='search_price').text.replace(' ', '').replace('\r\n', '')
-        if price.count("€") > 1:
-            prices = price.split("€")
-            price = prices[1] + "€"
-    except AttributeError:
-        title = " - "
-        picture_url = " - "
-        price = " - "
-        opinion = " - "
-        url = " - "
-    return ReturnElem(title, picture_url, price, opinion, url)
+        result = soup.find('a', class_='search_result_row')
+        if not result:
+            raise ValueError("No results found")
+
+        title = result.find('span', class_='title').text if result.find('span', class_='title') else "No title"
+        picture_url = result.img['src'] if result.img else "No image"
+        opinion_tag = result.find("span", {"class": "search_review_summary positive"})
+        opinion = opinion_tag["data-tooltip-html"].split("<br>")[0] if opinion_tag else "No opinion"
+
+        # Find the price element
+        price_element = result.find('div', class_='search_price')
+        if not price_element:
+            price_element = result.find('div', class_='discount_final_price')
+
+        # Extract the price
+        price = price_element.text.strip().replace('\r\n', '').replace('\n', '').replace('\t', '') if price_element else "No price"
+
+        link = result['href'] if result['href'] else "No link"
+    except Exception as e:
+        print(f"Error scraping Steam: {e}")
+        title = picture_url = price = opinion = link = "No data"
+    
+    return ReturnElem(title, picture_url, price, opinion, link)
 
 # Function for Instant Gaming scraping
 def ScrappingIG(userSearch):
@@ -58,37 +65,45 @@ def ScrappingIG(userSearch):
     IG_url = IG + userSearch.replace(" ", "%20")
     driver.get(IG_url)
     try:
-        title = driver.find_elements(By.CLASS_NAME, "title")[4].get_attribute('innerHTML')
-        picture_url = driver.find_elements(By.CLASS_NAME, "picture")[0].get_attribute('src')
-        price = driver.find_elements(By.CLASS_NAME, "price")[1].get_attribute('innerHTML')
-        opinion = " - "
-        url = IG_url
-    except IndexError:
-        title = " - "
-        picture_url = " - "
-        price = " - "
-        opinion = " - "
-        url = " - "
-    driver.quit()
-    return ReturnElem(title, picture_url, price, opinion, url)
+        titles = driver.find_elements(By.CLASS_NAME, "title")
+        pictures = driver.find_elements(By.CLASS_NAME, "picture")
+        prices = driver.find_elements(By.CLASS_NAME, "price")
+        
+        if len(titles) > 4 and len(pictures) > 0 and len(prices) > 1:
+            title = titles[4].get_attribute('innerHTML')
+            picture_url = pictures[0].get_attribute('src')
+            price = prices[1].get_attribute('innerHTML')
+            opinion = "No opinion"
+            link = IG_url
+        else:
+            raise IndexError("Not enough elements found")
+    except Exception as e:
+        print(f"Error scraping Instant Gaming: {e}")
+        title = picture_url = price = opinion = link = "No data"
+    finally:
+        driver.quit()
+    
+    return ReturnElem(title, picture_url, price, opinion, link)
 
 # Function for GOG scraping
 def ScrappingGOG(userSearch):
     GOG_url = GOG + userSearch.replace(" ", "%20")
-    request_text = requests.get(GOG_url).text
-    htmlpage = BeautifulSoup(request_text, "html.parser")
+    response = requests.get(GOG_url)
+    soup = BeautifulSoup(response.text, "html.parser")
     try:
-        title = htmlpage.find_all(class_="product-tile__title")[0].get('title')
-        picture_url = '0'
-        price = htmlpage.find_all(class_="final-value")[0].text
-        opinion = '0'
-    except IndexError:
-        title = " - "
-        picture_url = " - "
-        price = " - "
-        opinion = " - "
-        GOG_url = " - "
-    return ReturnElem(title, picture_url, price, opinion, GOG_url)
+        title_tag = soup.find(class_="product-tile__title")
+        price_tag = soup.find(class_="final-value")
+        
+        title = title_tag.get('title') if title_tag else "No title"
+        picture_url = "No image"  # Update if you can find an image URL
+        price = price_tag.text.strip() if price_tag else "No price"
+        opinion = "No opinion"  # Update if you can find reviews or ratings
+        link = GOG_url
+    except Exception as e:
+        print(f"Error scraping GOG: {e}")
+        title = picture_url = price = opinion = link = "No data"
+    
+    return ReturnElem(title, picture_url, price, opinion, link)
 
 # Route for the main page
 @app.route('/')
@@ -99,36 +114,16 @@ def index():
 @app.route('/search', methods=['GET'])
 def search_view():
     query = request.args.get('q')
-    # Aquí deberías realizar la lógica de búsqueda real. Por ahora, devolveremos datos simulados.
-    mock_data = [
-        {
-            'title': 'Game 1',
-            'opinion': 'Great game!',
-            'price': '$29.99',
-            'link': 'http://example.com/game1',
-            'image': 'http://example.com/game1.jpg'
-        },
-        {
-            'title': 'Game 2',
-            'opinion': 'Not bad',
-            'price': '$19.99',
-            'link': 'http://example.com/game2',
-            'image': 'http://example.com/game2.jpg'
-        },
-        {
-            'title': 'Game 3',
-            'opinion': 'Not bad',
-            'price': '$19.99',
-            'link': 'http://example.com/game2',
-            'image': 'http://example.com/game2.jpg'
-        },
-    ]
-    
-    # Filtrar los resultados según la consulta, si es necesario.
-    filtered_data = [game for game in mock_data if query.lower() in game['title'].lower()]
+    if not query:
+        return jsonify([])
 
-    return jsonify(filtered_data)
+    steam_data = ScrappingSteam(query)
+    ig_data = ScrappingIG(query)
+    gog_data = ScrappingGOG(query)
 
+    results = [steam_data, ig_data, gog_data]
+
+    return jsonify(results)
 
 
 if __name__ == '__main__':
