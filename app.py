@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from flask_pymongo import PyMongo
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -7,7 +8,10 @@ import requests
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = "Game_Wallet1234"
-
+# isigamewallet
+# LUmuy5BbA8K4PHrT
+app.config['MONGO_URI']="mongodb+srv://isigamewallet:LUmuy5BbA8K4PHrT@cluster0.6purjfz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+mongo = PyMongo(app)
 # Global vars
 Steam = "https://store.steampowered.com/search/?term="
 IG = "https://www.instant-gaming.com/fr/rechercher/?gametype=games&query="
@@ -92,19 +96,40 @@ def index():
     return render_template('index.html')
 
 # Route for handling game search requests
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET'])
 def search_view():
-    userSearch = request.form['q']
-    if userSearch:
-        table = [
-            ScrappingSteam(userSearch),
-            ScrappingIG(userSearch),
-            ScrappingGOG(userSearch)
-        ]
+    query = request.args.get('q')
+    # Aquí deberías realizar la lógica de búsqueda real. Por ahora, devolveremos datos simulados.
+    mock_data = [
+        {
+            'title': 'Game 1',
+            'opinion': 'Great game!',
+            'price': '$29.99',
+            'link': 'http://example.com/game1',
+            'image': 'http://example.com/game1.jpg'
+        },
+        {
+            'title': 'Game 2',
+            'opinion': 'Not bad',
+            'price': '$19.99',
+            'link': 'http://example.com/game2',
+            'image': 'http://example.com/game2.jpg'
+        },
+        {
+            'title': 'Game 3',
+            'opinion': 'Not bad',
+            'price': '$19.99',
+            'link': 'http://example.com/game2',
+            'image': 'http://example.com/game2.jpg'
+        },
+    ]
+    
+    # Filtrar los resultados según la consulta, si es necesario.
+    filtered_data = [game for game in mock_data if query.lower() in game['title'].lower()]
 
-        print(table)  # Print data to the Flask server terminal
+    return jsonify(filtered_data)
 
-    return jsonify(table)
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5555, debug=True)
