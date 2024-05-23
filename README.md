@@ -29,8 +29,9 @@ pip --version
 ```
 
 ```bash
-git clone https://github.com/DmCerezo/Proyecto-Web-Scraping-ISI-UGR.git
+pip install Flask
 ```
+
 ## Abrir el entorno de trabajo
 ```bash
  python -m venv env  
