@@ -1,4 +1,3 @@
-const picture_url_error = "http://127.0.0.1:5555/static/img/error404.png";
 let loading = false;
 
 document.addEventListener("keypress", async function(e) {
@@ -24,6 +23,7 @@ async function performSearch() {
         const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
 
         try {
+            //  Para subir cambiar fetch por https://gamewallet10.oa.r.appspot.com/search?q=' + valueSearch
             const response = await fetch('http://127.0.0.1:5555/search?q=' + valueSearch);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
