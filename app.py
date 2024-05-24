@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-from flask_pymongo import PyMongo
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,13 +8,11 @@ import requests
 app = Flask(__name__, template_folder='templates')
 app.secret_key = "Game_Wallet1234"
 # isigamewallet
-# LUmuy5BbA8K4PHrT
-app.config['MONGO_URI']="mongodb+srv://isigamewallet:LUmuy5BbA8K4PHrT@cluster0.6purjfz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-mongo = PyMongo(app)
+
 # Global vars
 Steam = "https://store.steampowered.com/search/?term="
 IG = "https://www.instant-gaming.com/fr/rechercher/?gametype=games&query="
-GOG = "https://www.gog.com/en/games?query="
+G2A = "https://www.g2a.com/es/category/gaming-c1?f[product-kind][0]=10&query="
 
 # Function to return JSON object
 def ReturnElem(title=None, picture_url=None, price=None, opinion=None, link=None):
@@ -85,25 +82,47 @@ def ScrappingIG(userSearch):
     
     return ReturnElem(title, picture_url, price, opinion, link)
 
-# Function for GOG scraping
-def ScrappingGOG(userSearch):
-    GOG_url = GOG + userSearch.replace(" ", "%20")
-    response = requests.get(GOG_url)
-    soup = BeautifulSoup(response.text, "html.parser")
-    try:
-        title_tag = soup.find(class_="product-tile__title")
-        price_tag = soup.find(class_="final-value")
-        
-        title = title_tag.get('title') if title_tag else "No title"
-        picture_url = "No image"  # Update if you can find an image URL
-        price = price_tag.text.strip() if price_tag else "No price"
-        opinion = "No opinion"  # Update if you can find reviews or ratings
-        link = GOG_url
-    except Exception as e:
-        print(f"Error scraping GOG: {e}")
-        title = picture_url = price = opinion = link = "No data"
+
+
+# Function for G2A scraping
+def ScrappingG2A(userSearch):
+    # Inicialización del navegador Chrome
+    driver = webdriver.Chrome()
     
-    return ReturnElem(title, picture_url, price, opinion, link)
+    # Construcción de la URL con la búsqueda del usuario
+    G2A_url = G2A + userSearch.replace(" ","%20")
+    driver.get(G2A_url)
+
+    try:
+        # Extracción del título del juego
+        title = driver.find_element(By.XPATH, "//h3/a").text
+    except:
+        title = " - "
+
+    try:
+        # Extracción de la URL de la imagen del juego
+        picture_url = driver.find_element(By.XPATH, "//a[contains(@class, 'sc-jQAxuV')]/img").get_attribute('src')
+    except:
+        picture_url = " - "
+
+    try:
+        # Extracción del precio del juego
+        price = driver.find_element(By.XPATH, "//span[contains(@class, 'sc-iqAclL sc-crzoAE dJFpVb eqnGHx sc-bqGGPW gjCrxq')]").text
+    except:
+        price = " - "
+    
+    # La opinión no parece estar disponible en el código proporcionado, así que se establece como "-"
+    opinion = "No opinion"
+    
+    # La URL se establece como la URL de la búsqueda en G2A
+    link = G2A_url
+    
+    # Cierre de la ventana del navegador
+    driver.close()
+    
+    # Devuelve la información obtenida
+    print (title, picture_url, price, opinion, link)
+    return ReturnElem(title, picture_url, price, opinion, link) 
 
 # Route for the main page
 @app.route('/')
@@ -119,9 +138,9 @@ def search_view():
 
     steam_data = ScrappingSteam(query)
     ig_data = ScrappingIG(query)
-    gog_data = ScrappingGOG(query)
+    G2A_data = ScrappingG2A(query)
 
-    results = [steam_data, ig_data, gog_data]
+    results = [steam_data, ig_data, G2A_data]
 
     return jsonify(results)
 

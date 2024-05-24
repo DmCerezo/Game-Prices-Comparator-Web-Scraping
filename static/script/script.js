@@ -30,7 +30,7 @@ async function performSearch() {
         }
         const data = await response.json();
 
-        const platforms = ["Steam", "IG", "GOG"];
+        const platforms = ["Steam", "IG", "G2A"];
         platforms.forEach((platform, index) => {
             const boxGame = document.getElementById(platform);
             const spans = boxGame.querySelectorAll("span");
@@ -42,13 +42,13 @@ async function performSearch() {
                 spans[1].innerText = game.opinion;
                 spans[2].innerText = game.price;
                 spans[3].innerHTML = game.link !== "-" ? `<a href="${game.link}">Haz clic aquí</a>` : game.link;
-                img.src = game.picture_url !== "-" ? game.picture_url : "default_image_path.png";
+                img.src = game.picture_url !== "-" ? game.picture_url : "https://static.vecteezy.com/system/resources/thumbnails/024/405/934/small/icon-tech-error-404-icon-isolated-png.png";
             } else {
                 spans[0].innerText = "No data";
                 spans[1].innerText = "";
                 spans[2].innerText = "";
                 spans[3].innerHTML = "";
-                img.src = "default_image_path.png"; // Imagen por defecto si no hay datos
+                img.src = "https://static.vecteezy.com/system/resources/thumbnails/024/405/934/small/icon-tech-error-404-icon-isolated-png.png"; // Imagen por defecto si no hay datos
             }
             boxGame.classList.remove('hidden');
         });
