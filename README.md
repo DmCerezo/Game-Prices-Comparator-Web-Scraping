@@ -32,6 +32,9 @@ Importante tener python instalado
 pip --version
 ```
 
+
+
+
 ```bash
 git clone https://github.com/DmCerezo/Proyecto-Web-Scraping-ISI-UGR.git
 ```
@@ -55,3 +58,6 @@ python app.py
 ## Para ver la aplicacion en local
 Ir a `http://127.0.0.1:5555`
 
+# Ejemplo de funcionamiento
+![cap1](https://github.com/DmCerezo/Proyecto-Web-Scraping-ISI-UGR/assets/127233730/3c0acf63-158e-4351-978d-75fcc24be7c2)
+![cap2](https://github.com/DmCerezo/Proyecto-Web-Scraping-ISI-UGR/assets/127233730/ed85e6bf-bbcd-4a9a-9cb8-cc7adc83a415)
