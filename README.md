@@ -1,4 +1,8 @@
 # Game Wallet 
+Es una proyecto desarrollado para la asignaruta Ingerieria de sistemas de la información en la cual mediante web scraping se obtienen los precios de los juegos en las diferentes plataformas la aplicación esta desarrollada en python y como framework web flask+Jinja y javascript.
+Como parte fundamental del proyecto se pedia el deploy en algun servicio cloud El que elegí fue google cloud a continuacion hay un tutorial para conseguir hacer funcionar la aplicacion en Google app engine con una maquina flexible. Tambien he incluido un tutorial basico para poder ejecutar la aplición en local.
+Esta aplicacion aunque es funcional y cumple todos los requisitos de la practica faltan cosa por pulir como: añadir una base de datos para agilizar los tiempos de carga y añadir otra pagina de web scraping la cual no esta implementada G2A(Debido a falta de tiempo para la entrega)
+Creditos a @Pierre y @Thibault ya que el frontend esta basado en su proyecto.
 ## Deply google cloud
 iniciar shell de google could
 ```bash
@@ -49,5 +53,5 @@ python app.py
 ```
 
 ## Para ver la aplicacion en local
-Go to `http://127.0.0.1:5555`
+Ir a `http://127.0.0.1:5555`
 
