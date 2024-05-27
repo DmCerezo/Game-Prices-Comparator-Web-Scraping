@@ -23,14 +23,14 @@ async function performSearch() {
     const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
 
     try {
-        //  Para subir cambiar fetch por https://gamewallet10.oa.r.appspot.com/search?q=' + valueSearch
+        //  Para subir cambiar fetch por (https://gamewallet10.oa.r.appspot.com/search?q=' + valueSearch); o La url de tu aplicacion
         const response = await fetch('http://127.0.0.1:5555/search?q=' + valueSearch);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
 
-        const platforms = ["Steam", "IG", "G2A"];
+        const platforms = ["Steam", "IG", "EpicGames"]; //Añadir "G2A"
         platforms.forEach((platform, index) => {
             const boxGame = document.getElementById(platform);
             const spans = boxGame.querySelectorAll("span");

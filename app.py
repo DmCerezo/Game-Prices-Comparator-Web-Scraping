@@ -69,7 +69,12 @@ def ScrappingIG(userSearch):
         if len(titles) > 4 and len(pictures) > 0 and len(prices) > 1:
             title = titles[4].get_attribute('innerHTML')
             picture_url = pictures[0].get_attribute('src')
-            price = prices[1].get_attribute('innerHTML')
+            # Utilizar un método más robusto para obtener el precio
+            price_element = prices[1]
+            # Limpiar el texto del precio para obtener solo el número
+            price_text = price_element.text.strip()
+            # Si el precio tiene una etiqueta <spam>, eliminarla
+            price = price_text.split("<")[0]
             opinion = "No opinion"
             link = IG_url
         else:
@@ -83,7 +88,7 @@ def ScrappingIG(userSearch):
     return ReturnElem(title, picture_url, price, opinion, link)
 
 
-
+# SIN IMPLEMENTAR PERO FUNCIONAL
 # Function for G2A scraping
 def ScrappingG2A(userSearch):
     # Inicialización del navegador Chrome
@@ -124,6 +129,122 @@ def ScrappingG2A(userSearch):
     print (title, picture_url, price, opinion, link)
     return ReturnElem(title, picture_url, price, opinion, link) 
 
+
+
+# Function for EpicGames scraping
+def ScrappingEpicGames(userSearch):
+    # URL de la API GraphQL de Epic Games
+    url = "https://graphql.epicgames.com/graphql"
+    
+    # URL base para buscar juegos en la tienda de Epic Games
+    search_url = f"https://store.epicgames.com/en-US/browse?q={userSearch.replace(' ', '%20')}&sortBy=relevancy"
+
+    # Consulta GraphQL para buscar un juego en la tienda de Epic Games
+    query = """
+    query searchStoreQuery(
+      $allowCountries: String
+      $category: String
+      $namespace: String
+      $itemNs: String
+      $sortBy: String
+      $sortDir: String
+      $start: Int
+      $tag: String
+      $releaseDate: String
+      $withPrice: Boolean = true
+      $keywords: String
+    ) {
+      Catalog {
+        searchStore(
+          allowCountries: $allowCountries
+          category: $category
+          count: 1
+          country: "ES"
+          keywords: $keywords
+          namespace: $namespace
+          itemNs: $itemNs
+          sortBy: $sortBy
+          sortDir: $sortDir
+          releaseDate: $releaseDate
+          start: $start
+          tag: $tag
+        ) {
+          elements {
+            title
+            keyImages {
+              type
+              url
+            }
+            productSlug
+            urlSlug
+            url
+            price(country: "ES") @include(if: $withPrice) {
+              totalPrice {
+                fmtPrice(locale: "en-ES") {              
+                  discountPrice             
+                }
+              }
+            }
+            customAttributes {
+              key
+              value
+            }
+          }
+        }
+      }
+    }
+    """
+
+    # Parámetros de la consulta GraphQL
+    params = {
+        "operationName": "searchStoreQuery",
+        "variables": {
+            "allowCountries": None,
+            "category": None,
+            "namespace": None,
+            "itemNs": None,
+            "sortBy": None,
+            "sortDir": None,
+            "start": None,
+            "tag": None,
+            "releaseDate": None,
+            "withPrice": True,
+            "keywords": userSearch
+        },
+        "query": query
+    }
+
+    try:
+        # Realizar la solicitud POST a la API GraphQL de Epic Games
+        response = requests.post(url, json=params)
+        # Obtener el JSON de la respuesta
+        json_data = response.json()
+
+        # Extraer la información del juego desde el JSON
+        game_info = json_data["data"]["Catalog"]["searchStore"]["elements"][0]
+        title = game_info["title"]
+        picture_url = None
+        for image in game_info["keyImages"]:
+            if image["type"] == "OfferImageWide":
+                picture_url = image["url"]
+                break
+        price = game_info["price"]["totalPrice"]["fmtPrice"]["discountPrice"]
+
+    except Exception as e:
+        title = " - "
+        picture_url = " - "
+        price = " - "
+
+    # Establecer la opinión como "no opinion"
+    opinion = "no opinion"
+
+    # URL de la tienda de Epic Games
+    link = search_url
+    
+    # Devolver la información obtenida
+    return ReturnElem(title, picture_url, price, opinion, link)
+  
+
 # Route for the main page
 @app.route('/')
 def index():
@@ -138,9 +259,10 @@ def search_view():
 
     steam_data = ScrappingSteam(query)
     ig_data = ScrappingIG(query)
-    G2A_data = ScrappingG2A(query)
+    EpicGames_data = ScrappingEpicGames(query)
+    #G2A_data = ScrappingG2A(query)
 
-    results = [steam_data, ig_data, G2A_data]
+    results = [steam_data, ig_data, EpicGames_data] #añadir G2A_data
 
     return jsonify(results)
 
